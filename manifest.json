@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "name": "Twitter Scout",
+  "version": "1.0",
+
+  "description": "Manually add posts to database, edit them and repost to Telegram",
+
+  "icons": {
+    "48": "icons/scout-48.png"
+  },
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false,
+    "type": "module"
+  },
+
+  "browser_action": {
+    "default_icon": "icons/scout-32.png",
+    "default_title": "Twitter Scout"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://twitter.com/*"],
+      "js": ["page.js"]
+    }
+  ],
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "twitter-scout@narvanux"
+    }
+  }
+}

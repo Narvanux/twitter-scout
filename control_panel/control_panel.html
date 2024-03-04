@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="control_panel.css">
+    </head>
+    <body>
+        
+        <div id="import">
+            <h3>Import database</h3>
+            <input type="file" id="file-input" accept=".json">
+            <br>
+            Set background database: 
+            <button id="set-bg-file" style="margin-top: 3px;">From file</button>
+            <button id="set-bg-def" style="margin-top: 3px;">From default</button>
+        </div>
+
+        <div id="backup">
+            <h3>Backup database</h3>
+            <button id="save-as">Save</button>
+        </div>
+
+        <div id="Current database">
+            <b>Contents</b>
+            <button id="sync">Sync with background script</button>
+            <br>
+            <p style="white-space: pre" id="content">{}</p>
+        </div>
+
+        <script src="control_panel.js"></script>
+    </body>
+</html>
