@@ -10,7 +10,7 @@
   },
 
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["core/background.js"],
     "persistent": false,
     "type": "module"
   },
@@ -23,12 +23,12 @@
   "content_scripts": [
     {
       "matches": ["https://twitter.com/*"],
-      "js": ["page.js"]
+      "js": ["content.js"]
     }
   ],
 
   "permissions": [
-    "activeTab"
+    "activeTab", "tabs"
   ],
 
   "browser_specific_settings": {

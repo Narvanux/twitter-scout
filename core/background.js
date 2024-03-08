@@ -22,3 +22,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         delete scoutDatabase[message.author][message.tweetId]
     }
 });
+
+const filter = { urls: ["https://twitter.com/*"], properties: ["status"] };
+
+function handleUpdated(tabId, changeInfo) {
+    if (changeInfo.status == 'complete') {
+        browser.tabs.sendMessage(tabId, true)
+    }
+}
+
+browser.tabs.onUpdated.addListener(handleUpdated, filter);
