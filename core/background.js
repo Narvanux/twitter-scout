@@ -3,9 +3,12 @@ var isDatabaseImported = false
 
 browser.browserAction.onClicked.addListener(() => {
     let creating = browser.tabs.create({
-        url: "control_panel/control_panel.html",
+        url: "../control-panel/control-panel.html",
     });
 });
+
+const filter = { urls: ["https://twitter.com/*"], properties: ["status"] };
+browser.tabs.onUpdated.addListener(handleUpdated, filter);
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "getDB") {
@@ -23,12 +26,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-const filter = { urls: ["https://twitter.com/*"], properties: ["status"] };
-
-function handleUpdated(tabId, changeInfo) {
-    if (changeInfo.status == 'complete') {
+function handleUpdated(tabId, changeInfo, tabInfo) {
+    if (changeInfo.status === 'complete') {
         browser.tabs.sendMessage(tabId, true)
     }
 }
-
-browser.tabs.onUpdated.addListener(handleUpdated, filter);
