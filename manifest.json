@@ -23,7 +23,10 @@
   "content_scripts": [
     {
       "matches": ["https://twitter.com/*"],
-      "js": ["core/scout-content.js"]
+      "js": [
+        "core/scout-buttons.js",
+        "core/scout-content.js"
+      ]
     }
   ],
 
