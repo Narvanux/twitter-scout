@@ -16,3 +16,7 @@ p {
 .hidden {
     display: none;
 }
+
+body {
+    margin: 0px;
+}

@@ -24,6 +24,7 @@
     {
       "matches": ["https://twitter.com/*"],
       "js": [
+        "core/additional-styles.js",
         "core/scout-buttons.js",
         "core/scout-content.js"
       ]

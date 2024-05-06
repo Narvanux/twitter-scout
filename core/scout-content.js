@@ -1,9 +1,5 @@
 observed = []
 
-var styleSheet = document.createElement("style");
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message == true) {
         checkUploaded()
@@ -38,6 +34,25 @@ function checkExistance() {
 }
 
 function startObserving() {
+
+    const isOwnTimeline = document.querySelector('div[aria-label*="Timeline: "][aria-label*="posts"]')
+    if (!isOwnTimeline && document.querySelector('style#own')) {
+        removeStyle('own')
+    }
+
+    // add buttons to toggle display of collected tweets
+    const areNavButtons = document.querySelector('input#displayTrue')
+    if (areNavButtons == null) {
+        createNavChecks()
+    }
+
+    // add buttons to toggle display of own tweets
+    const areHeadButtons = document.querySelector('input#displayOwn')
+    const headerExists = document.querySelector('div.r-1gn8etr')
+    if (areHeadButtons == null && headerExists && isOwnTimeline) {
+        createHeaderChecks()
+    }
+
     // Config and callback
     const config = {childList: true};
     TMNTObserver()
@@ -61,8 +76,10 @@ function TMNTObserver(mutationList, observer) {
 
             // deletes tweets without attachments
             const hasAttachs = articleScouted[i].querySelector('div.css-175oi2r.r-9aw3ui.r-1s2bzr4 > div.css-175oi2r.r-9aw3ui')
-            if (hasAttachs === null && articleScouted[i].getAttribute('tabindex') != '-1') {
-                articleScouted[i].style.display = 'none'
+            // deletes sponsored
+            const hasSponsor = articleScouted[i].querySelector('a[href*="justfor.fans"]')
+            if ((hasAttachs === null || hasSponsor === null) && articleScouted[i].getAttribute('tabindex') != '-1') {
+                articleScouted[i].setAttribute('text-empty', '');
                 continue
             }
 
@@ -74,12 +91,26 @@ function TMNTObserver(mutationList, observer) {
             const [author, status, isInDb] = checkHref(articleScouted[i], 'a[href*="status"]');
             const isHeader = articleScouted[i].getAttribute('tabindex') == '-1' ? true : false
 
+            // extract if and who retweeted
+            const potentialRetweet = articleScouted[i].querySelector('span[data-testid="socialContext"]')
+            var rtwLink = ""
+            if (potentialRetweet !== null) {
+                rtwLink = potentialRetweet.closest('a').getAttribute('href').split('/')[1]
+                // don't show self-retweets
+                if (rtwLink == author) {
+                    articleScouted[i].style.display = 'none'
+                    continue
+                }
+            } else {
+                articleScouted[i].setAttribute('own', '')
+            }
+
             articleScouted[i].querySelector('div[data-testid="User-Name"]').appendChild(
                 createScoutButton(false, isInDb, author, status, isHeader));
         }
     }
 
-    const mediaScouted = document.querySelectorAll('div[data-testid="cellInnerDiv"] li:not([scout-stored])');
+    const mediaScouted = document.querySelectorAll('div[data-testid="cellInnerDiv"] li[id*="verticalGridItem"]:not([scout-stored])');
     if (mediaScouted !== null) {
         for (let j = 0; j < mediaScouted.length; j++) {
             mediaScouted[j].setAttribute('scout-stored', '');
