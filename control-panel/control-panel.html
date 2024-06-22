@@ -7,7 +7,7 @@
     <body>
         
         <div id="import">
-            <h3>Import database</h3>
+            <b>Import database:</b>
             <input type="file" id="file-input" accept=".json">
             <br>
             Set background database: 
@@ -15,15 +15,12 @@
             <button id="set-bg-def" style="margin-top: 3px;">From default</button>
         </div>
 
-        <div id="backup">
-            <h3>Backup database</h3>
+        <div>
+            <b>Backup database:</b>
             <button id="save-as">Save</button>
-        </div>
-
-        <div id="Current database">
-            <b>Contents</b>
-            <button id="sync">Sync with background script</button>
             <br>
+            <b>Contents</b>
+            <button id="sync">Update display</button>
             <p style="white-space: pre" id="content">{}</p>
         </div>
 

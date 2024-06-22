@@ -1,4 +1,5 @@
 localDatabase = {}
+tempUserList = []
 
 function scoutButtonEvent(event) {
     // get all data values from attributes of button
@@ -23,8 +24,9 @@ function scoutButtonEvent(event) {
             }
     
         } else {
-            var origin = caller.closest('article').querySelector('div.css-175oi2r.r-9aw3ui.r-1s2bzr4 > div.css-175oi2r.r-9aw3ui');
-            if (isHeader) { origin = origin.closest('div[aria-labelledby="modal-header"]').querySelector('div[data-testid="swipe-to-dismiss"] ') }
+            var origin = caller.closest('article');
+            if (isHeader) { origin = origin.closest('div[aria-labelledby="modal-header"]') }
+            else { origin = origin.querySelector('div.css-175oi2r.r-9aw3ui.r-1s2bzr4 > div.css-175oi2r.r-9aw3ui') }
     
             const potentialVideo = origin.querySelector('div[data-testid="videoComponent"]')
             if (potentialVideo !== null) { attachments.push('v') }
@@ -92,8 +94,56 @@ function createHeaderChecks() {
     lbl1.setAttribute('for', 'displayOwn');
     chk1.addEventListener("change", toggleShow);
     chk1.styleType = 'own';
-    const nav = document.querySelector('div.r-1gn8etr div.r-1jgb5lz');
+    const nav = document.querySelector('.r-1gn8etr > div:nth-child(1)' + 
+        ' > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)' + 
+        ' > div:nth-child(1) > div:nth-child(1)');
     div.appendChild(chk1)
     div.appendChild(lbl1)
+    nav.appendChild(div)
+}
+
+
+function doTheScroll() {
+    const isHere = document.querySelector('a[href*="/following"][aria-selected="true"]')
+    if (isHere !== null) {
+        const timeline = document.querySelector('div[aria-label*="Following"] > div')
+        const last = timeline.lastChild
+        if (timeline.querySelector('div:nth-last-child(2)').getAttribute('applied') !== null) { return; }
+        const items = timeline.querySelectorAll(
+            'div[data-testid="cellInnerDiv"] div.r-18u37iz.r-1wbh5a2 a')
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i]
+            if (item.getAttribute('applied') === null) {
+                let link = item.getAttribute('href').split('/')[1]
+                tempUserList.push(link)
+                item.setAttribute('applied', '')
+            }
+        }
+        last.scrollIntoView();
+        window.setTimeout(doTheScroll, 3000)
+    }
+}
+
+function saveTempList() {
+    var a = document.createElement("a");
+    let resp = JSON.stringify(tempUserList);
+    a.href = window.URL.createObjectURL(new Blob([resp], {type: "text/plain"}));
+    a.download = "save.json";
+    a.click(); 
+}
+
+function createFollowButtons() {
+    tempUserList = []
+    const saveBtn = document.createElement('button')
+    saveBtn.appendChild(document.createTextNode('Save'))
+    saveBtn.addEventListener('click', saveTempList)
+    const scrollBtn = document.createElement('button')
+    scrollBtn.appendChild(document.createTextNode('Scroll'))
+    scrollBtn.addEventListener('click', doTheScroll)
+    const nav = document.querySelector('div.r-1gn8etr div.r-1jgb5lz');
+    const div = document.createElement('div')
+    div.id = 'followGroup'
+    div.appendChild(saveBtn)
+    div.appendChild(scrollBtn)
     nav.appendChild(div)
 }

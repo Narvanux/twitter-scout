@@ -12,9 +12,7 @@ const ownShownStyle = `
 
 const mainStyle = `
     div[aria-label="Home timeline"] > div.css-175oi2r.r-14lw9ot.r-184en5c,
-    nav[aria-label*="Profile"],
-    div[data-testid="cellInnerDiv"]:has(article[text-empty]),
-    div.css-175oi2r.r-1adg3ll.r-6gpygo:has(span[data-testid="UserJoinDate"]) {
+    nav[aria-label*="Profile"] {
         display: none
     }
 
@@ -45,8 +43,6 @@ function toggleShow(event) {
 function createStyle(type) {
     const stl = document.createElement('style')
     stl.id = type
-    console.log(type)
-    console.log(stl.id)
     if (type == 'true') {
         stl.innerText = trueShownStyle
     } else { stl.innerText = ownShownStyle }

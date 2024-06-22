@@ -25,10 +25,18 @@ function checkUploaded() {
 
 function checkExistance() {
     //loop until tweets or grid elements of media tab found
-    var element = document.querySelector('article, div[data-testid="cellInnerDiv"] li')
+    select = 'article, div[data-testid="cellInnerDiv"] li, ' + 
+        'a[href*="/following"][aria-selected="true"]'
+    var element = document.querySelector(select)
     if(element === null) {
         window.setTimeout(checkExistance, 1500);
     } else {
+        // also create buttons for following parser
+        const inFollow = document.querySelector('a[href*="/following"][aria-selected="true"]')
+        if (document.getElementById('followGroup') === null && inFollow !== null) {
+            createFollowButtons()
+        }
+
         window.setTimeout(startObserving, 750);
     }
 }
@@ -78,9 +86,9 @@ function TMNTObserver(mutationList, observer) {
             const hasAttachs = articleScouted[i].querySelector('div.css-175oi2r.r-9aw3ui.r-1s2bzr4 > div.css-175oi2r.r-9aw3ui')
             // deletes sponsored
             const hasSponsor = articleScouted[i].querySelector('a[href*="justfor.fans"]')
-            if ((hasAttachs === null || hasSponsor === null) && articleScouted[i].getAttribute('tabindex') != '-1') {
-                articleScouted[i].setAttribute('text-empty', '');
-                continue
+            if ((hasAttachs === null || hasSponsor !== null) && articleScouted[i].getAttribute('tabindex') != '-1') {
+                // articleScouted[i].closest('div[data-testid="cellInnerDiv"]').remove()
+                articleScouted[i].closest('div[data-testid="cellInnerDiv"]').style.display = 'none'
             }
 
             // reveals sensitive content automatically to prevent further bugs
@@ -89,7 +97,10 @@ function TMNTObserver(mutationList, observer) {
 
             // extracts data from link in analytics button
             const [author, status, isInDb] = checkHref(articleScouted[i], 'a[href*="status"]');
-            const isHeader = articleScouted[i].getAttribute('tabindex') == '-1' ? true : false
+
+            const hasFullscreen = articleScouted[i].closest('div[aria-labelledby="modal-header"]') !== null
+            const negIndex = articleScouted[i].getAttribute('tabindex') == '-1'
+            const isHeader = (negIndex && hasFullscreen) ? true : false
 
             // extract if and who retweeted
             const potentialRetweet = articleScouted[i].querySelector('span[data-testid="socialContext"]')
@@ -98,7 +109,8 @@ function TMNTObserver(mutationList, observer) {
                 rtwLink = potentialRetweet.closest('a').getAttribute('href').split('/')[1]
                 // don't show self-retweets
                 if (rtwLink == author) {
-                    articleScouted[i].style.display = 'none'
+                    // articleScouted[i].closest('div[data-testid="cellInnerDiv"]').remove()
+                    articleScouted[i].closest('div[data-testid="cellInnerDiv"]').style.display = 'none'
                     continue
                 }
             } else {

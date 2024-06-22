@@ -7,7 +7,7 @@ browser.browserAction.onClicked.addListener(() => {
     });
 });
 
-const filter = { urls: ["https://twitter.com/*"], properties: ["status"] };
+const filter = { urls: ["https://x.com/*"], properties: ["status"] };
 browser.tabs.onUpdated.addListener(handleUpdated, filter);
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
